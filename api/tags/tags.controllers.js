@@ -2,7 +2,7 @@ const Tag = require("../../models/Tag");
 
 exports.tagsGet = async (req, res) => {
   try {
-    const tags = await Tag.find();
+    const tags = await Tag.find().populate("posts");
     res.json(tags);
   } catch (error) {
     next(error);
