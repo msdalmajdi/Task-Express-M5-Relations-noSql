@@ -1,6 +1,7 @@
-const Post = require('../../models/Post');
+const Post = require("../../models/Post");
+const Tag = require("../../models/Tag");
 
-exports.fetchPost = async (postId) => {
+exports.fetchPost = async (postId, next) => {
   try {
     const post = await Post.findById(postId);
     return post;
@@ -8,7 +9,7 @@ exports.fetchPost = async (postId) => {
     next(error);
   }
 };
-
+/*
 exports.postsCreate = async (req, res) => {
   try {
     const newPost = await Post.create(req.body);
@@ -17,6 +18,7 @@ exports.postsCreate = async (req, res) => {
     next(error);
   }
 };
+*/
 
 exports.postsDelete = async (req, res) => {
   try {
@@ -38,9 +40,43 @@ exports.postsUpdate = async (req, res) => {
 
 exports.postsGet = async (req, res) => {
   try {
-    const posts = await Post.find();
+    const posts = await Post.find().populate("author");
     res.json(posts);
   } catch (error) {
     next(error);
   }
 };
+///:postId/:tagId
+exports.tagPostAdd = async (req, res) => {
+  try {
+    const { tagId } = req.params;
+    await Post.findByIdAndUpdate(req.post.id, {
+      $push: { tags: tagId },
+    });
+    await Tag.findByIdAndUpdate(tagId, {
+      $push: { posts: req.post.id },
+    });
+
+    res.status(204).end();
+  } catch (error) {
+    next(error);
+  }
+};
+
+/*
+exports.postsCreate = async (req, res) => {
+  const { authorId } = req.params;
+  req.body.author = authorId;
+  console.log(req.body.author);
+  try {
+    const newPost = await Post.create(req.body);
+    await Author.findByIdAndUpdate(req.author.id, {
+      $push: { posts: newPost._id },
+    });
+    res.status(201).json(newPost);
+  } catch (error) {
+    next(error);
+  }
+};
+
+*/
