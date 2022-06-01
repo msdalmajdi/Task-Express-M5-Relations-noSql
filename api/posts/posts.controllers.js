@@ -62,21 +62,3 @@ exports.tagPostAdd = async (req, res) => {
     next(error);
   }
 };
-
-/*
-exports.postsCreate = async (req, res) => {
-  const { authorId } = req.params;
-  req.body.author = authorId;
-  console.log(req.body.author);
-  try {
-    const newPost = await Post.create(req.body);
-    await Author.findByIdAndUpdate(req.author.id, {
-      $push: { posts: newPost._id },
-    });
-    res.status(201).json(newPost);
-  } catch (error) {
-    next(error);
-  }
-};
-
-*/
